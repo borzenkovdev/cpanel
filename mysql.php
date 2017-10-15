@@ -2,22 +2,24 @@
 $errors = [];
 
 $id = intval($_GET['id']);
+$email = trim($_GET['email']);
+$login = trim($_GET['login']);
+$password = trim($_GET['password']);
 
-$login = intval($_GET['login']);
-
-$email = test_input($_GET['email']);
-if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+//check email
+$emailCheck = test_input($email);
+if (! filter_var($emailCheck, FILTER_VALIDATE_EMAIL)) {
     $errors[] = "Invalid email format";
 }
 
-$password = $_GET['password'];
-
-//Must be a minimum of 6 characters
-//Must contain at least 1 number
-//Must contain at least one uppercase character
-//Must contain at least one lowercase character
+//check password
 if(! preg_match('^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$', $password)) {
     $errors[] = "Invalid password format - In password must be numbers, uppercase and lowercase characters. Length must be a minimum 6 ";
+}
+
+//check login
+if(! preg_match('/^[a-zA-Z0-9]{5,30}$/', $login)) {
+    $errors[] = "Invalid login format - login password can be numbers, uppercase and lowercase characters. Length must be a minimum 5, max 30. Dont use special characters, like /^@&*%^()%!%*&? ";
 }
 
 if (empty($errors)) {
