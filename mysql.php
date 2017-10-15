@@ -47,7 +47,4 @@ if (empty($errors)) {
     }
 }
 
-
-
-
-
+?>
