@@ -37,8 +37,8 @@ if (empty($errors)) {
         $row = mysql_fetch_assoc($result);
         header("location: http://example.com/view.php?id=" . $row['id']);
     } else {
-        $message  = 'Неверный запрос: ' . mysql_error() . "\n";
-        $message .= 'Запрос целиком: ' . $query;
+        $message  = 'Wrong query: ' . mysql_error() . "\n";
+        $message .= 'Query: ' . $query;
         die($message);
     }
 } else {
