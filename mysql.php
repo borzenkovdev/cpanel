@@ -29,9 +29,9 @@ if (empty($errors)) {
         $result = mysql_query($connect, $query);
     } catch (Exception $e) {
         echo $e->getMessage(), "\n";
+    } finally {
+        mysql_close($connect);
     }
-
-    mysql_close($connect);
 
     if ($result) {
         $row = mysql_fetch_assoc($result);
