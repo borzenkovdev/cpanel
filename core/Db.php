@@ -26,29 +26,23 @@ class Db
      */
     public function __construct()
     {
-        $config = require_once('./config/db.php');
-
         if (! $this->bConnected) {
-            $this->Connect(
-                $config['hostname'],
-                $config['database'],
-                $config['username'],
-                $config['password'],
-                $config['charset']
-            );
+            $this->Connect();
         }
     }
 
     /**
      *	This method makes connection to the database.
-     *
-     *	1. Reads the database settings from a ini file.
-     *	2. Puts  the ini content into the settings array.
-     *	3. Tries to connect to the database.
-     *	4. If connection failed, exception is displayed and a log file gets created.
      */
-    private function Connect($hostname, $database, $username, $password, $charset)
+    private function Connect()
     {
+        $config = require_once('./config/db.php');
+
+        $hostname = $config['hostname'];
+        $database = $config['database'];
+        $username = $config['username'];
+        $password = $config['password'];
+        $charset = $config['charset'];
 
         $dsn = 'mysql:dbname='.$database.';host='.$hostname;
 

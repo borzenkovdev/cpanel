@@ -3,14 +3,14 @@ namespace programs;
 
 class Door
 {
-    public function on()
+    public function open()
     {
-        print_r('I am method On of class' . self::class);
+        print_r('I am method open of class ' . self::class);
     }
 
-    public function off()
+    public function close()
     {
-        print_r('I am method Off of class' . self::class);
+        print_r('I am method close of class ' . self::class);
     }
 }
 ?>

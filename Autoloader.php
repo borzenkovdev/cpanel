@@ -18,7 +18,7 @@ class Autoloader {
         if ($included) {
             return true;
         } else {
-            throw new Exception("Cant load : {$className}");
+            throw new Exception("Cant load : {$className}. Class doesnt exist!");
         }
     }
 }

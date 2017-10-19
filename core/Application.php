@@ -2,13 +2,10 @@
 
 namespace core;
 
-use core\Db;
 use core\ControlPanel;
 
 class Application
 {
-    private $db;
-
     private $ControlPanel;
 
     private $commandsWhiteList = [
@@ -22,8 +19,10 @@ class Application
     public function __construct($arguments)
     {
         if (count($arguments) > 1 && in_array($arguments[1], $this->commandsWhiteList)) {
-            $cPanel = new ControlPanel();
-            call_user_func([$cPanel, $arguments[1]], $arguments);
+            if (!is_object($this->ControlPanel)) {
+                $this->ControlPanel = new ControlPanel();
+            }
+            call_user_func([$this->ControlPanel, $arguments[1]], $arguments);
         } else {
             echo 'Error: Incorrect quantity of arguments' . PHP_EOL;
             $this->help();
