@@ -1,0 +1,195 @@
+<?php
+
+namespace core;
+
+use PDO;
+
+/**
+ * Class Db
+ */
+class Db
+{
+    # @object, The PDO object
+    private $pdo;
+
+    # @object, PDO statement object
+    private $sQuery;
+
+    # @bool ,  Connected to the database
+    private $bConnected = false;
+
+    private $parameters;
+
+    /**
+     *   Default Constructor
+     *	Connect to database
+     */
+    public function __construct()
+    {
+        $config = require_once('./config/db.php');
+
+        if (! $this->bConnected) {
+            $this->Connect(
+                $config['hostname'],
+                $config['database'],
+                $config['username'],
+                $config['password'],
+                $config['charset']
+            );
+        }
+    }
+
+    /**
+     *	This method makes connection to the database.
+     *
+     *	1. Reads the database settings from a ini file.
+     *	2. Puts  the ini content into the settings array.
+     *	3. Tries to connect to the database.
+     *	4. If connection failed, exception is displayed and a log file gets created.
+     */
+    private function Connect($hostname, $database, $username, $password, $charset)
+    {
+
+        $dsn = 'mysql:dbname='.$database.';host='.$hostname;
+
+        try
+        {
+            # Read settings from INI file, set UTF8
+            $this->pdo = new PDO($dsn, $username, $password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$charset}"));
+
+            # We can now log any exceptions on Fatal error.
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            # Disable emulation of prepared statements, use REAL prepared statements instead.
+            $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+
+            # Connection succeeded, set the boolean to true.
+            $this->bConnected = true;
+        } catch (PDOException $e) {
+            # Write into log
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+    }
+
+    /*
+     *   You can use this little method if you want to close the PDO connection
+     *
+     */
+    public function CloseConnection()
+    {
+        # Set the PDO object to null to close the connection
+        # http://www.php.net/manual/en/pdo.connections.php
+        $this->pdo = null;
+    }
+
+    /**
+     *	Every method which needs to execute a SQL query uses this method.
+     *
+     *	1. If not connected, connect to the database.
+     *	2. Prepare Query.
+     *	3. Parameterize Query.
+     *	4. Execute Query.
+     *	5. On exception : Write Exception into the log + SQL query.
+     *	6. Reset the Parameters.
+     */
+    private function Init($query,$parameters = "")
+    {
+        # Connect to database
+        if(!$this->bConnected) { $this->Connect(); }
+
+        try {
+            # Prepare query
+            $this->sQuery = $this->pdo->prepare($query);
+
+            # Add parameters to the parameter array
+            $this->bindMore($parameters);
+
+            # Bind parameters
+            if(!empty($this->parameters)) {
+                foreach($this->parameters as $param)
+                {
+                    $parameters = explode("\x7F",$param);
+                    $this->sQuery->bindParam($parameters[0],$parameters[1]);
+                }
+            }
+
+            # Execute SQL
+            $this->success = $this->sQuery->execute();
+        }
+        catch(PDOException $e)
+        {
+            # Write into log and display Exception
+            $this->ExceptionLog($e->getMessage(), $query );
+        }
+
+        # Reset the parameters
+        $this->parameters = [];
+    }
+
+    /**
+     *	@void
+     *
+     *	Add the parameter to the parameter array
+     *	@param string $para
+     *	@param string $value
+     */
+    public function bind($para, $value)
+    {
+        $this->parameters[sizeof($this->parameters)] = ":" . $para . "\x7F" . utf8_encode($value);
+    }
+    /**
+     *	@void
+     *
+     *	Add more parameters to the parameter array
+     *	@param array $parray
+     */
+    public function bindMore($parray)
+    {
+        if(empty($this->parameters) && is_array($parray)) {
+            $columns = array_keys($parray);
+            foreach($columns as $i => &$column)	{
+                $this->bind($column, $parray[$column]);
+            }
+        }
+    }
+    /**
+     *   	If the SQL query  contains a SELECT or SHOW statement it returns an array containing all of the result set row
+     *	If the SQL statement is a DELETE, INSERT, or UPDATE statement it returns the number of affected rows
+     *
+     *   	@param  string $query
+     *	@param  array  $params
+     *	@param  int    $fetchmode
+     *	@return mixed
+     */
+    public function query($query,$params = null, $fetchmode = PDO::FETCH_ASSOC)
+    {
+        $query = trim($query);
+
+        $this->Init($query,$params);
+
+        $rawStatement = explode(" ", $query);
+
+        # Which SQL statement is used
+        $statement = strtolower($rawStatement[0]);
+
+        if ($statement === 'select' || $statement === 'show') {
+            return $this->sQuery->fetchAll($fetchmode);
+        }
+        elseif ( $statement === 'insert' ||  $statement === 'update' || $statement === 'delete' ) {
+            return $this->sQuery->rowCount();
+        }
+        else {
+            return NULL;
+        }
+    }
+
+    /**
+     *  Returns the last inserted id.
+     *  @return string
+     */
+    public function lastInsertId() {
+        return $this->pdo->lastInsertId();
+    }
+}
+?>
