@@ -5,7 +5,9 @@
 **database**
 
 ```
-create database 'weblab' by weblab.sql
+1.modify config/db.php for connect to mysql
+2.create database 'weblab' by weblab.sql
+
 ```
 
 ## Usage
@@ -19,7 +21,26 @@ These are common commands used in various situations:
    performOff       Manual executing Off some action of programm - Typical usage: 'php index.php performOff n (where n = position of button row )'
 
 ```
+## Apllication structure
 
+```
+config
+ - db.php   - config for connect 
+core -  folder for core classs of app
+ - Application.php   -  main class
+ - ControlPanel.php   -  class for control of panel
+ - Db.php   -  database class
+programs - folder for programs, which binding to buttons
+ - Door.php 
+ - Garage.php 
+ - Jalouse.php 
+ ...
+  - Macros.php  - class< which can bind many actions to one button
+Autoloader.php - class for autoload classes
+index.php - it is main script, point of entry
+weblab.sql - database, its required for script
+ 
+```
 ## Compatibility
 ```
 PHP 5.4 + with PDO extension
