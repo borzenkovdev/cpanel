@@ -1,4 +1,4 @@
-<h2>Apllication which realize interface for contorl panel</h2>
+<h2>Application which realize interface for contorl panel</h2>
 
 ## Install
 
