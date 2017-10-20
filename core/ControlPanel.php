@@ -3,6 +3,10 @@ namespace core;
 
 use core\Db;
 
+/**
+ * Class ControlPanel
+ * @package core
+ */
 class ControlPanel
 {
     const MAX_HISTORY_OPERATIONS = 8;
@@ -70,6 +74,7 @@ class ControlPanel
         }
 
         $limit = intval($arguments[2]);
+
         if ($limit > self::MAX_HISTORY_OPERATIONS) {
             echo 'Error: You cant revert ' . $limit .' operations, maximum ' . self::MAX_HISTORY_OPERATIONS . ' operations' . PHP_EOL;
             return false;
@@ -79,6 +84,7 @@ class ControlPanel
         $res = $this->dbInstance->query("SELECT * FROM `operations` ORDER BY created_at DESC LIMIT {$limit};");
 
         foreach ($res as $button) {
+            //try to execute previus action
             try {
                 $isExecuted = $this->perform($button['button_id'], $button['prev_action'], false);
             } catch (\Exception $e) {
@@ -149,11 +155,12 @@ class ControlPanel
      */
     protected function perform($position, $action, $saveHistory = true)
     {
-        $resArray = $this->dbInstance->query('SELECT * FROM `buttons` WHERE id=:id LIMIT 1', ['id' => $position]);
+        $resArray = $this->dbInstance->query('SELECT * FROM `buttons` WHERE position=:position LIMIT 1', ['position' => $position]);
         if (! $resArray || !$resArray[0]) {
             throw new \Exception("Error {$action}: Buttons row {$position} doesnt exist");
         }
 
+        //todo - fix this
         $result = $resArray[0];
 
         if($this->checkMethodExist($result['program'], $result[$action])) {
@@ -174,7 +181,7 @@ class ControlPanel
      */
     protected function updateButton($position, $actionOn, $actionOff, $program)
     {
-        $exist = $this->dbInstance->query('SELECT * FROM `buttons` WHERE id=:id LIMIT 1', ['id' => $position]);
+        $exist = $this->dbInstance->query('SELECT * FROM `buttons` WHERE position=:position LIMIT 1', ['position' => $position]);
         if (! $exist) {
             throw new \Exception("Buttons row {$position} doesnt exist");
         }
@@ -188,7 +195,7 @@ class ControlPanel
                 perform_off = :perform_off,
                 program = :program,
                 updated_at = now()
-            WHERE id = :position", [
+            WHERE position = :position", [
                 'perform_on' => $actionOn,
                 'perform_off' => $actionOff,
                 'program' => $program,

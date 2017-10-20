@@ -26,6 +26,12 @@ class Db
      */
     public function __construct()
     {
+        //check PDO extension
+        if (!extension_loaded('pdo_mysql')) {
+            throw new \Exception('Cant find PDO extensions, which required for this application! Please install PDO and restart app.');
+        }
+
+        //connect
         if (! $this->bConnected) {
             $this->Connect();
         }

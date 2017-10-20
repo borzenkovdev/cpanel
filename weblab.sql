@@ -19,6 +19,7 @@ USE `weblab`;
 -- Дамп структуры для таблица weblab.buttons
 CREATE TABLE IF NOT EXISTS `buttons` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `position` int(11) NOT NULL,
   `perform_on` varchar(50) NOT NULL,
   `perform_off` varchar(50) NOT NULL,
   `program` varchar(50) NOT NULL,
@@ -28,14 +29,14 @@ CREATE TABLE IF NOT EXISTS `buttons` (
 
 -- Дамп данных таблицы weblab.buttons: ~7 rows (приблизительно)
 /*!40000 ALTER TABLE `buttons` DISABLE KEYS */;
-INSERT INTO `buttons` (`id`, `perform_on`, `perform_off`, `program`, `updated_at`) VALUES
-	(1, 'on', 'off', 'BathroomLight', '2017-10-19 23:30:35'),
-	(2, 'open', 'close', 'Door', NULL),
-	(3, 'open', 'close', 'Garage', NULL),
-	(4, 'warmUp', 'warmDown', 'Heating', '2017-10-19 23:30:42'),
-	(5, 'turnOn', 'turnOff', 'Jacuzzi', NULL),
-	(6, 'up', 'down', 'Jalousie', NULL),
-	(7, 'on', 'off', 'Kettle', NULL);
+INSERT INTO `buttons` (`id`, `position`, `perform_on`, `perform_off`, `program`, `updated_at`) VALUES
+	(1, 1, 'on', 'off', 'BathroomLight', '2017-10-19 23:30:35'),
+	(2, 2, 'open', 'close', 'Door', NULL),
+	(3, 3, 'open', 'close', 'Garage', NULL),
+	(4, 4, 'on', 'off', 'Macros', '2017-10-20 08:29:53'),
+	(5, 5, 'turnOn', 'turnOff', 'Jacuzzi', NULL),
+	(6, 6, 'up', 'down', 'Jalousie', NULL),
+	(7, 7, 'on', 'off', 'Kettle', NULL);
 /*!40000 ALTER TABLE `buttons` ENABLE KEYS */;
 
 -- Дамп структуры для таблица weblab.operations
@@ -46,12 +47,16 @@ CREATE TABLE IF NOT EXISTS `operations` (
   `program` varchar(50) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы weblab.operations: ~2 rows (приблизительно)
+-- Дамп данных таблицы weblab.operations: ~5 rows (приблизительно)
 /*!40000 ALTER TABLE `operations` DISABLE KEYS */;
 INSERT INTO `operations` (`id`, `button_id`, `prev_action`, `program`, `created_at`) VALUES
-	(39, 2, 'perform_off', 'Door', '2017-10-20 01:03:22');
+	(50, 7, 'perform_off', 'Kettle', '2017-10-20 08:22:57'),
+	(55, 4, 'perform_off', 'Macros', '2017-10-20 08:30:01'),
+	(56, 4, 'perform_off', 'Macros', '2017-10-20 08:32:09'),
+	(57, 4, 'perform_off', 'Macros', '2017-10-20 08:33:04'),
+	(58, 4, 'perform_on', 'Macros', '2017-10-20 08:33:09');
 /*!40000 ALTER TABLE `operations` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
