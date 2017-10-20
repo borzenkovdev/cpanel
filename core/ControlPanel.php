@@ -75,7 +75,7 @@ class ControlPanel
 
         $limit = intval($arguments[2]);
 
-        if ($limit > self::MAX_HISTORY_OPERATIONS) {
+        if ($limit > self::MAX_HISTORY_OPERATIONS || $limit <= 0) {
             echo 'Error: You cant revert ' . $limit .' operations, maximum ' . self::MAX_HISTORY_OPERATIONS . ' operations' . PHP_EOL;
             return false;
         }
