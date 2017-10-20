@@ -35,7 +35,7 @@ programs - folder for programs, which binding to buttons
  - Garage.php 
  - Jalouse.php 
  ...
-  - Macros.php  - class< which can bind many actions to one button
+  - Macros.php  - class, which can bind many actions to one button
 Autoloader.php - class for autoload classes
 index.php - it is main script, point of entry
 weblab.sql - database, its required for script
