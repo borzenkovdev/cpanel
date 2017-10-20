@@ -2,8 +2,6 @@
 
 ## Install
 
-**database**
-
 ```
 1.modify config/db.php for connect to mysql
 2.create database 'weblab' by weblab.sql
