@@ -4,7 +4,7 @@
 
 **database**
 
-``'
+```
 create database 'weblab' by weblab.sql
 ```
 
@@ -12,15 +12,23 @@ create database 'weblab' by weblab.sql
 
 ```
 These are common commands used in various situations:
-   add              Add new actions to buttons
-   printCommands    Show all buttons bindings
-   undo             Revert previous action
-   performOn        Manual executing some action of programm
-   performOff       Manual executing some action of programm
+   add              Add new actions to buttons - Typical usage: 'php index.php add position/perform_on/perform_off/programClass'
+   printCommands    Show all buttons bindings - Typical usage: 'php index.php printCommands'
+   undo             Revert previous action - Typical usage: 'php index.php undo 3 (its revert last three operations, max 8)'
+   performOn        Manual executing On action of programm - Typical usage: 'php index.php performOn n (where n = position of button row )'
+   performOff       Manual executing Off some action of programm - Typical usage: 'php index.php performOff n (where n = position of button row )'
+
 ```
 
 ## Compatibility
-
+```
 PHP 5.4 + with PDO extension
+```
+
+## How to add new progrram to Cpanel
+
+```
+Just add new class to programm folder with tho methods for on action and for off action
+```
 
 
